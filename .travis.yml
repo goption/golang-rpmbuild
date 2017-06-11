@@ -1,0 +1,16 @@
+sudo: required
+services:
+- docker
+git:
+  depth: 3
+script:
+- docker build -t gorpm .
+- docker run gorpm go version
+branches:
+  only:
+  - master
+  - develop
+notifications:
+  email: false
+  slack:
+    secure: jxZbTbkL/oZf/okHsxd9RQf96vukVRpx5ukCjEPdgDXtyivjjRy8ul+NhXi5GNJXvV+qBRN1YuL9F10VfPGQyu8VONUoBCoBAmwoZA5IBzZdLjujNmoLElXg4STe7PwHyqc+6QxZHfjdWyxuzIPPvqrLNlPUbTn99EL5rlq0bENThLcTE5ywvhMe6aRNZXPWKExoecgckVpehgV+oROSOM+Vf8Hthg92t0nltu/7pCmwuMxYskNN9QJlb78dacY//zAJw26lhmAjM87Lg/90JIYmlftIjoNc1J5HwpLhFqKBpJyP65w9eive/Vd+7+Nii+x2U4pU3Jrez9XslFyodMyNtLxhkwjAHzDnqJsR40DYGSocSJnWMszYRzB8bn0N5Z8Mpl8ZO9PupZGK66QvwgVB8ZONdLhScbOWFSSCCnDXUPMKbDUU9XnDTHtbs0EzehYwgnQ1E9iVr9y20yldEv2ZRNxjLPnyyI+ryvwugty/UsxY7BjEOaX94nzDlUucsy9DGNK1pIWOtZSkhlaUDD6wF8a16F/4WuIPCvn4TiX/hv/WRwmaJ8LfKvU8j1GsSXTuhTX4Fel4vd06UI1inz7meUN0I5oQu4TVRwOnwb0qife+59SoFjr1MF26l26tlUnSdblbMDPWTES5MFgS2O34R4yHQ4bFRbuJmIpw6M0=
