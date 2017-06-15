@@ -14,12 +14,22 @@ Set BUILD_TIME to $BUILD_TIME
 Set SHA to $SHA
 Set SHORT_SHA to $SHORT_SHA"
 
-echo "Running govendor sync..."
-govendor sync
+if [[ -d vendor && -f vendor/vendor.json ]]; then
+    echo "Running govendor sync..."
+    govendor sync
+else
+    echo "No vendor.json found, skipping govendor sync"
+fi
 
 echo "Creating gzipped tar file of repo..."
 tar --transform "s,^\.,${REPO_NAME}-${VERSION}," --exclude .git --exclude .svn --exclude .hg -czf ~/rpmbuild/SOURCES/${REPO_NAME}-${VERSION}.tar.gz .
-cp $REPO_NAME.spec ~/rpmbuild/SPECS
+
+if [[ -f $REPO_NAME.spec ]]; then
+    cp $REPO_NAME.spec ~/rpmbuild/SPECS
+else
+    echo "Cannot find file $REPO_NAME.spec, exiting..."
+    exit;
+fi
 
 pushd ~/rpmbuild >/dev/null 2>&1
 arch=epel-7-x86_64
