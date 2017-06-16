@@ -4,8 +4,8 @@ services:
 git:
   depth: 3
 script:
-- docker build -t gorpm .
-- docker run gorpm go version
+- docker build -t gocreate .
+- docker run gocreate go version
 branches:
   only:
   - master
