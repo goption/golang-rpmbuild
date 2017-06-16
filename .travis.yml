@@ -4,7 +4,7 @@ services:
 git:
   depth: 3
 script:
-- docker build -t gocreate create
+- docker build -t gocreate .
 - docker run gocreate go version
 branches:
   only:
