@@ -37,8 +37,8 @@ in your specfile.
 Since there is no provision to read the `release` variable from the spec file
 and Mock needs the name of the SRPM to build the RPM, it will always look for
 1.el7 in the SRPM filename: `$REPO_NAME-$VERSION-1.el7.centos.src.rpm`, and
-the RPM will be identically named but without the `.src`. **If you specify a
-release other than `1%{dist}`, it will not work.**
+the RPM will be identically named but with `x86_64` instead of `src`.
+**If you specify a release other than `1%{dist}`, it will not work.**
 
 ### Signing RPMs
 Add a few more options to your Dockerfile:
