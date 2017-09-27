@@ -4,7 +4,7 @@ set -e
 
 pushd $GOPATH/src/$REPO_PATH/$REPO_NAME >/dev/null 2>&1
 
-test -n $TRAVIS_TAG && export VERSION=$TRAVIS_TAG
+test -n $TRAVIS_TAG -a -z $VERSION && export VERSION=$TRAVIS_TAG
 test -z $VERSION && export VERSION=edge
 test -z $BUILD_TIME && export BUILD_TIME=$(date -u +%FT%TZ)
 test -z $SHA && export SHA=$(git rev-parse HEAD 2>/dev/null)
@@ -30,6 +30,35 @@ else
     echo "Cannot find file $REPO_NAME.spec, exiting..."
     exit;
 fi
+
+if [ -n $KEYNAME ]; then
+    # Import the keys...
+    KF="$HOME/$KEYNAME.asc"
+    if [[ ! -f $KF ]]; then
+        echo "Cannot find key $KEYNAME at $KF. Exiting..."
+        exit
+    fi
+    echo "Importing $KEYNAME from $KF..."
+    gpg --import $KF
+    gpg --export -a $KEYNAME > $KEYNAME.pub.asc
+    rpmkeys --import $KEYNAME.pub.asc
+    rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release} --> %{summary}\n'
+
+    echo "Updating /root/.rpmmacros with GPG info..."
+    cat >>$HOME/.rpmmacros <<EOL
+%_signature gpg
+%_gpg_path /root/.gnupg
+%_gpg_name $KEYNAME
+%_gpgbin /usr/bin/gpg
+EOL
+
+    echo "Setting sign_enable to True in $HOME/.config/mock.cfg..."
+    sed -ir 's/(.+sign_enable.+)False$/\1True/' $HOME/.config/mock.cfg
+fi
+
+# will need passphrase during build
+# After build
+rpm --checksig
 
 pushd $HOME/rpmbuild >/dev/null 2>&1
 arch=epel-7-x86_64
